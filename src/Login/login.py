@@ -27,20 +27,19 @@ def login():
         account = cur.fetchone()
         cur.close()
         print(account)
+        
         if account:
             session['logueado'] = True
             session['id'] = account[0]
-            session['id_rol'] = account[3]
-            session['nombre'] = account[4]
+            Datos_usuario['nombre']= account[4]
+            Datos_usuario['rol'] = account[3]
+        
+            if session['id_rol'] == 1:
+                return redirect(url_for('home_BP.home'))
             
-            Datos_usuario['nombre']= session['nombre']
-            Datos_usuario['rol'] = session['id_rol']
-        if session['id_rol'] == 1:
+            elif session['id_rol'] == 2:
+                return redirect(url_for('home_BP.home'))
             
-            return redirect(url_for('home_BP.home'))
-        elif session['id_rol'] == 2:
-            
-            return redirect(url_for('home_BP.home'))
-    else:
         return render_template('login.html', mensaje="Usuario o Contraseña Incorrectos")
+        
 

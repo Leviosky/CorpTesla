@@ -8,13 +8,14 @@ home_BP = Blueprint('home_BP', __name__, template_folder='templates',static_fold
 
 @home_BP.route('/home')
 def home():
-    nombre_usuario = login.Datos_usuario['nombre']
-    rol_usuario = login.Datos_usuario['rol']  
-    if rol_usuario == 1: 
-        rol_usuario = 'Admin'
-    else: 
-        rol_usuario = 'Usuario'
-    return render_template('index.html', nombre_usuario=nombre_usuario, rol_usuario=rol_usuario)
+    if login.Datos_usuario:
+        nombre_usuario = login.Datos_usuario['nombre']
+        rol_usuario = login.Datos_usuario['rol']  
+        if rol_usuario == 1: 
+            rol_usuario = 'Admin'
+        else: 
+            rol_usuario = 'Usuario'
+        return render_template('index.html', nombre_usuario=nombre_usuario, rol_usuario=rol_usuario)
 
 @home_BP.route('/clientes/registro')
 def AddClient():
