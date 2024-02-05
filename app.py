@@ -7,9 +7,3 @@ app = init_app(configuracion)
 if __name__ == '__main__':
     app.run()
     
-    
-    
-    
-    
-    
-    #iytkjhgklh

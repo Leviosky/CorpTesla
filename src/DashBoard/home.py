@@ -26,7 +26,19 @@ def AddClient():
         rol_usuario = 'Usuario'
     return render_template('addclient.html', nombre_usuario=nombre_usuario, rol_usuario=rol_usuario)
 
-@home_BP.route('/clientes/inspeccion')
+
+@home_BP.route('/Proyectos/Registro')
+def AddProject():
+    nombre_usuario = login.Datos_usuario['nombre']
+    rol_usuario = login.Datos_usuario['rol']  
+    if rol_usuario == 1: 
+        rol_usuario = 'Admin'
+    else: 
+        rol_usuario = 'Usuario'
+    return render_template('addproject.html', nombre_usuario=nombre_usuario, rol_usuario=rol_usuario)
+
+
+@home_BP.route('/Proyectos/inspeccion')
 def AddInspection():
     nombre_usuario = login.Datos_usuario['nombre']
     rol_usuario = login.Datos_usuario['rol']  
@@ -36,7 +48,7 @@ def AddInspection():
         rol_usuario = 'Usuario'
     return render_template('addinspection.html', nombre_usuario=nombre_usuario, rol_usuario=rol_usuario)
 
-@home_BP.route('/clientes/Tramites')
+@home_BP.route('/Proyectos/Tramites')
 def AddPaperWork():
     nombre_usuario = login.Datos_usuario['nombre']
     rol_usuario = login.Datos_usuario['rol']  
