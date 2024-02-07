@@ -39,7 +39,6 @@ def login():
             
             elif session['id_rol'] == 2:
                 return redirect(url_for('home_BP.home'))
-            
-        return render_template('login.html', mensaje="Usuario o Contraseña Incorrectos")
-        
+    return render_template("login.html", mensaje="Usuario o Contraseña Incorrectos")
+
 
