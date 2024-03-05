@@ -1,12 +1,14 @@
-import secrets
+from decouple import config
 
-clave_secreta = secrets.token_hex(24)
 
-class DevelopmentConfig:
+class Config():
+    SECRET_KEY = config('SECRET_KEY', default='CorpTesla12_')
+
+
+class DevelopmentConfig(Config):
     DEBUG = True
-    SECRET_KEY = 'clave_secreta'
 
-# Diccionario de configuración
+
 config = {
     'development': DevelopmentConfig
 }
