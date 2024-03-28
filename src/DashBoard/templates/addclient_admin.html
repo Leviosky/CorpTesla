@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin="">
+    </script>
+{% endblock %}
+
+{% block title %}Nuevo Cliente{% endblock %}
+
+
+
+
+
+
+    {% block sidebar %}
+        {% include 'sidebar_admin.html' %}
+    {% endblock %}
+    
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+    <div class="container-fluid pt-4 px-4">
+        <div class="row vh-200 bg-secondary rounded align-items-center justify-content-center mx-0">
+            <div class="col-md-6 text-center">
+                <a class="display-3" href="{{ url_for('home_BP.AddClient', origin_page='addclient_admin.html') }}">Registrar nuevo cliente</a>
+                <form class="form-signin" action="{{ url_for('home_BP.AddClient') }}" method="POST">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInputNombre" name="nombre" placeholder="">
+                        <label for="floatingInputNombre">Nombre</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInputCedula" name="cedula" placeholder="">
+                        <label for="floatingInputCedula">Cédula</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInputCorreo" name="correo" placeholder="name@example.com">
+                        <label for="floatingInputCorreo">Correo</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInputTelefono" name="telefono" placeholder="Telefono">
+                        <label for="floatingInputTelefono">Teléfono</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="floatingSelect" name="servicio" aria-label="Floating label select example">
+                        <option selected>Selecciona un Servicio</option>
+                        <option value="1">Diseño e Instalación de Sistema Fotovoltaico</option>
+                        <option value="2">Diseño e Instalación de Sistema Eléctrico</option>
+                        <option value="3">Energía Eléctrica</option>
+                        <option value="4">Automatización Residencial</option>
+                        <option value="5">Automatización Industrial</option>
+                        <option value="6">Otro</option>
+                        </select>
+                        <label for="floatingSelect">Servicios</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" name="comentarios" placeholder="Leave a comment here" id="floatingTextarea" style="height: 150px;"></textarea>
+                        <label for="floatingTextarea">Comentarios</label>
+                    </div>
+                    <div  id="map">
+                        <input type="hidden" name="latitud" id="latitud" />
+                        <input type="hidden" name="longitud" id="longitud" />
+                    </div>
+                    <button class="btn btn-primary" type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    
+{% block scripts %}
+    
+
+    <script>
+    let map = L.map('map').setView([7.96854,-80.43088], 12); 
+  
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+  
+  var marker;
+  
+    map.on('click', function (e) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker(e.latlng).addTo(map);
+        document.getElementById('latitud').value = e.latlng.lat;
+        document.getElementById('longitud').value = e.latlng.lng;
+    });
+    </script>
+{% endblock %}

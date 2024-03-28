@@ -287,3 +287,19 @@
     background: var(--dark);
     border-color: var(--primary);
 }
+
+#map{
+    height: 500px; 
+    margin-bottom: 30px;
+    margin-top: 20px;
+    align-items: center;
+    display: flex;
+}
+
+.Form_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    background-color: #6C7293;
+}
