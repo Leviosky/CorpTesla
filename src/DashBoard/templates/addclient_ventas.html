@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Nuevo Cliente{% endblock %}
+<!-- Enlazar a la biblioteca Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-Daw3dMTOp0c9PjrGPNDrIu5Dk7LGfC33kw/Ri+QuYim8JL4AD/0UpFqLbETaJLcX"
+  crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha384-p8I+XSO+tgU+pJLdBl4RDUq5p0OV27ZQfszO35peQlVHCEbUGTlXt2JZFFbL6CC0" crossorigin="anonymous"></script>
+
+{% block sidebar %}
+    {% include 'sidebar_Ventas.html' %}
+{% endblock %}
+
+{% block content %}
+            <!-- Blank Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row vh-100 bg-secondary rounded align-items-center justify-content-center mx-0">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h1 class="display-2">Registro de Clientes</h1>
+                            <form class="form-signin" action="{{ url_for('home_BP.AddClient') }}" method="POST">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInputNombre" name="nombre" placeholder="">
+                                    <label for="floatingInputNombre">Nombre</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInputCedula" name="cedula" placeholder="">
+                                    <label for="floatingInputCedula">Cédula</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="floatingInputCorreo" name="correo" placeholder="name@example.com">
+                                    <label for="floatingInputCorreo">Correo</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="number" class="form-control" id="floatingInputTelefono" name="telefono" placeholder="Telefono">
+                                    <label for="floatingInputTelefono">Teléfono</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="floatingSelect" name="servicio" aria-label="Floating label select example">
+                                        <option selected>Selecciona un Servicio</option>
+                                        <option value="1">Diseño e Instalación de Sistema Fotovoltaico</option>
+                                        <option value="2">Diseño e Instalación de Sistema Eléctrico</option>
+                                        <option value="3">Energía Eléctrica</option>
+                                        <option value="4">Automatización Residencial</option>
+                                        <option value="5">Automatización Industrial</option>
+                                        <option value="6">Otro</option>
+                                    </select>
+                                    <label for="floatingSelect">Servicios</label>
+                                </div>
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="comentarios" placeholder="Leave a comment here" id="floatingTextarea" style="height: 150px;"></textarea>
+                                    <label for="floatingTextarea">Comentarios</label>
+                                </div>
+                                <div id="map" style="height: 400px;"></div>
+                                    <input type="hidden" name="latitud" id="latitud" />
+                                    <input type="hidden" name="longitud" id="longitud" />
+                                </div>
+                                <button class="btn btn-primary" type="submit">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blank End -->
+{% endblock %}
+<script>
+    var map = L.map('map').setView([0, 0], 2); // Centrado en el ecuador, zoom 2
+  
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+  
+    var marker;
+  
+    map.on('click', function (e) {
+      if (marker) {
+        map.removeLayer(marker);
+      }
+      marker = L.marker(e.latlng).addTo(map);
+      document.getElementById('latitud').value = e.latlng.lat;
+      document.getElementById('longitud').value = e.latlng.lng;
+    });
+  </script>
+  

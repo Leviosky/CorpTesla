@@ -21,8 +21,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="{{ url_for('home_BP.static', filename='lib/owlcarousel/assets/owl.carousel.min.css')}}"  rel="stylesheet">
+    <link href="{{ url_for('home_BP.static', filename='lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css')}}" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ url_for('home_BP.static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -43,7 +43,9 @@
         </div>
         <!-- Sidebar End -->
         <div class="content">
+            
             <!-- Navbar Start -->
+        {% block navbar %}
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
@@ -133,6 +135,7 @@
                     </div>
                 </div>
             </nav>
+        {% endblock %}
             <!-- Navbar End -->
             
             <div class="container-fluid pt-4 px-4"  style="height: auto;">
@@ -149,16 +152,16 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/chart/chart.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/chart/chart.min.js') }}"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/tempusdominus/js/moment.min.js') }}"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+    <script src="{{ url_for('home_BP.static', filename='lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="{{ url_for('home_BP.static', filename='js/main.js') }}"></script>
     {% block scripts %}
     {% endblock %}
 </body>

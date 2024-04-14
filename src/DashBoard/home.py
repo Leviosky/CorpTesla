@@ -31,30 +31,36 @@ def AddClient():
         ClienteLon = request.form['longitud']
         origin_page = request.form.get('origin_page')
         
+        messages_to_flash = [] 
+        
         # Verifica si el cliente ya existe en la base de datos
         cliente_existente_cedula = Client.query.filter_by(ClienteCedula=ClienteCedula).first()
         cliente_existente_email = Client.query.filter_by(ClienteEmail=ClienteEmail).first()
         
         if cliente_existente_cedula:
-            flash('El cliente ya está registrado con esta cédula', 'warning')
-            return redirect(url_for('home_BP.AddClient', origin_page=origin_page))
+            messages_to_flash.append(('Ya existe un CLIENTE registrado con esta CÉDULA', 'warning'))
+            
         if cliente_existente_email:
-            flash('El cliente ya está registrado con este correo electrónico', 'warning')
-            return redirect(url_for('home_BP.AddClient', origin_page=origin_page))
+            messages_to_flash.append(('Ya existe un CLIENTE registrado con este CORREO ELECTRÓNICO', 'warning'))
+            
         if not re.match(r'[^@]+@[^@]+\.[^@]+', ClienteEmail):
-            flash('Dirección de correo electrónico no válida', 'warning')
-            return redirect(url_for('home_BP.AddClient', origin_page=origin_page))
+            messages_to_flash.append(('Dirección de correo electrónico no válida', 'warning'))
+            
         
+        if messages_to_flash:
+            for message, category in messages_to_flash:
+                flash(message, category)
+        else:
         # Crea un nuevo objeto Client con los datos del formulario
-        nuevo_cliente = Client(ClienteNombre, ClienteCedula, ClienteTel, ClienteEmail, id_services, ClienteComent, ClienteLat, ClienteLon)
+            nuevo_cliente = Client(ClienteNombre, ClienteCedula, ClienteTel, ClienteEmail, id_services, ClienteComent, ClienteLat, ClienteLon)
 
         # Agrega y guarda el nuevo cliente en la base de datos
-        db.session.add(nuevo_cliente)
-        db.session.commit()
+            db.session.add(nuevo_cliente)
+            db.session.commit()
 
-        flash('Cliente registrado exitosamente', 'success')
-        if origin_page:
-            return redirect(url_for('home_BP.' + origin_page))
+            flash('Cliente registrado exitosamente', 'success')
+            if origin_page:
+                return redirect(url_for('home_BP.' + origin_page))
     
     # Manejo del método GET
     # Determine qué plantilla HTML renderizar basada en el tipo de usuario o rol
