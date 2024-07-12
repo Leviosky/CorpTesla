@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block head %}
+    <script src="https://unpkg.com/htmx.org"></script>
+{% endblock %}
+
+{% block title %} Crear Proyecto {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_ventas.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row vh-200 bg-secondary rounded align-items-center justify-content-center mx-0">
+        <div class="bg-dark text-center rounded ">
+            <h2>¡Clientes Nuevos!</h2>
+
+            <!-- Slideshow de clientes nuevos -->
+            <div class="bg-dark text-center rounded p-4 mb-4 border border-info ">
+                <div id="new-clients-carousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for client in new_clients %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                            <div class="d-block w-100" onclick="window.location.href='{{ url_for('home_BP.client_profile', client_id=client.ClientesID)}}'">
+                                <h5>{{ client.ClienteNombre }}</h5>
+                                <p>{{ client.ClienteCedula }} - {{ client.ClienteEmail }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#new-clients-carousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#new-clients-carousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Search bar -->
+            <div class="bg-secondary text-center rounded p-4 border border-info">
+                <form id="search-form" method="POST" hx-post="{{ url_for('home_BP.search_clients') }}" hx-target="#client-list">
+                    <div class="form-group">
+                        <label for="search_term"><h3>Buscar Cliente</h3></label>
+                        <input type="text" id="search_term" name="search_term" class="form-control" placeholder="Buscar por nombre, cédula o correo" hx-trigger="keyup changed delay:500ms">
+                    </div>
+                </form>
+            </div>
+            <!-- Listado de clientes buscados -->
+            <div id="client-list">
+                <!-- El contenido de esta sección se actualizará dinámicamente con HTMX -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

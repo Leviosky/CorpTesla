@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %} Perfil del Cliente {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_ventas.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row bg-dark rounded mx-0">
+        <!-- Profile Information -->
+        <div class="col-md-6 bg-secondary text-center rounded p-4 mb-4">
+            <div class="row mb-4">
+                <div class="col-md-auto">
+                    <img class="rounded-circle me-lg-2" src="{{ url_for('home_BP.static', filename='img/User.png' )}}" alt="" style="width: 200px; height: 200px;">
+                    <h2 class="text-white">{{ client.ClienteNombre }}</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="ms-4 text-start">
+                    <h3 class="text-muted">Personal Info</h3>
+                    <h6 class="text-light">
+                        Email: {{ client.ClienteEmail }} <br>
+                        Teléfono: {{ client.ClienteTel }} <br>
+                        Cedula: {{ client.ClienteCedula }}
+                    </h6>
+                    <a href="#" class="btn btn-outline-light mt-2">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="col-md-6 bg-secondary text-center rounded p-4 mb-4">
+            <div id="map" style="height: 400px;"></div>
+        </div>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="row bg-dark rounded mx-0">
+        <div class="col-12 bg-secondary text-center rounded p-4 mt-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-light">Projects</h2>
+                <a href="{{ url_for('home_BP.SelectAddProject',client_id=client.ClientesID) }}" class="btn btn-outline-light">Nuevo Proyecto</a>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Project</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proyecto in proyectos %}
+                    <tr>
+                        <td>{{ proyecto.ProjectName }}</td>
+                        <td>
+                            {% if proyecto.CompletadoStatus %}
+                                <span class="badge bg-success">Completado</span>
+                            {% elif proyecto.CanceladoStatus %}
+                                <span class="badge bg-danger">Cancelado</span>
+                            {% else %}
+                                <span class="badge bg-warning">En Proceso</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ proyecto.InitDate.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('home_BP.project_profile', project_id=proyecto.ProjectID) }}" class="btn btn-primary">Ver Proyecto</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Obtén las coordenadas del cliente desde las variables de plantilla de Flask
+        var clienteLat = {{ client.ClienteLat }};
+        var clienteLon = {{ client.ClienteLon }};
+        
+        // Verifica las coordenadas en la consola
+        console.log("Latitud del cliente:", clienteLat);
+        console.log("Longitud del cliente:", clienteLon);
+
+        // Configuración del mapa
+        var map = L.map('map').setView([clienteLat, clienteLon], 13);
+
+        // Capa de mapa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Añadir un marcador
+        L.marker([clienteLat, clienteLon]).addTo(map)
+            .bindPopup('Ubicación del cliente.')
+            .openPopup();
+    });
+</script>
+{% endblock %}

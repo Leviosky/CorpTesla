@@ -1,0 +1,45 @@
+<!-- templates/planos.html -->
+{% extends 'base.html' %}
+
+{% block title %} Subir Planos {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_ingeniero.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="container mt-4 bg-secondary rounded">
+    <h1 class="display-4">Subir Planos</h1>
+    <form action="{{ url_for('home_BP.submit_planos') }}" method="POST" enctype="multipart/form-data">
+        <!-- Selección del Proyecto -->
+        <div class="mb-3">
+            <label for="project" class="form-label">Selecciona Proyecto</label>
+            <select class="form-select" id="project" name="project_id" required>
+                <option selected disabled>Elige un proyecto</option>
+                {% for proyecto in proyectos %}
+                    <option value="{{ proyecto.SolarID }}">{{ proyecto.proyecto.ProjectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Subir Archivo de Planos -->
+        <div class="mb-3">
+            <label for="file" class="form-label">Subir Archivo (PDF)</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".pdf" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Planos</button>
+    </form>
+</div>
+{% endblock %}

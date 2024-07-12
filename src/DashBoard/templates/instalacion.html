@@ -1,0 +1,131 @@
+<!-- templates/instalacion.html -->
+{% extends 'base.html' %}
+
+{% block title %} Instalación {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_instalador.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container mt-5 bg-secondary rounded">
+    <h1 class="mb-4">Registrar Instalación</h1>
+    <form action="{{ url_for('home_BP.submit_instalacion') }}" method="POST">
+        <div class="form-group">
+            <label for="ProjectID">Proyecto:</label>
+            <select class="form-control" name="ProjectID" id="ProjectID" required>
+                {% for proyecto in proyectos %}
+                    <option value="{{ proyecto.ProjectID }}">{{ proyecto.ProjectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="CapacidadInst">Capacidad Instalada (kWh):</label>
+            <input type="number" class="form-control" name="CapacidadInst" id="CapacidadInst" required>
+        </div>
+        <div class="form-group">
+            <label for="PanelID">Panel:</label>
+            <select class="form-control" name="PanelID" id="PanelID" required>
+                {% for panel in paneles %}
+                    <option value="{{ panel.id_Panel }}">{{ panel.Marca }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="PanelWatts">Watts del Panel:</label>
+            <input type="number" class="form-control" name="PanelWatts" id="PanelWatts" required>
+        </div>
+        <div class="form-group">
+            <label for="PanelUnits">Número de Paneles:</label>
+            <input type="number" class="form-control" name="PanelUnits" id="PanelUnits" required>
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="batteryCheckbox" onclick="toggleBatteryFields()">
+            <label class="form-check-label" for="batteryCheckbox">Usar Batería</label>
+        </div>
+        <div id="battery-section">
+            <div class="form-group">
+                <label for="BattID">Batería:</label>
+                <select class="form-control" name="BattID" id="BattID" disabled>
+                    {% for bateria in baterias %}
+                        <option value="{{ bateria.id_Bateria }}">{{ bateria.Marca }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="BattWatts">Watts de la Batería:</label>
+                <input type="number" class="form-control" name="BattWatts" id="BattWatts" disabled>
+            </div>
+            <div class="form-group">
+                <label for="BattUnits">Número de Baterías:</label>
+                <input type="number" class="form-control" name="BattUnits" id="BattUnits" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="DataLogger">Data Logger:</label>
+            <input type="text" class="form-control" name="DataLogger" id="DataLogger">
+        </div>
+        <h2 class="mt-4">Inversores</h2>
+        {% for i in range(1, 6) %}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="inversor{{ i }}_enabled" name="inversor{{ i }}_enabled">
+            <label class="form-check-label" for="inversor{{ i }}_enabled">Inversor {{ i }}</label>
+        </div>
+        <div id="inversor{{ i }}" class="form-row mb-3" style="display:none;">
+            <div class="form-group col-md-4">
+                <label for="MarcaID{{ i }}">Marca:</label>
+                <select class="form-control" name="MarcaID{{ i }}">
+                    {% for inversor in inversores %}
+                        <option value="{{ inversor.id_marca }}">{{ inversor.Marca }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="Capacidad{{ i }}">Capacidad:</label>
+                <input type="number" class="form-control" name="Capacidad{{ i }}" id="Capacidad{{ i }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="Model{{ i }}">Modelo:</label>
+                <input type="text" class="form-control" name="Model{{ i }}" id="Model{{ i }}">
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Registrar Instalación</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    for (let i = 1; i <= 5; i++) {
+        const inversorEnabled = document.getElementById(`inversor${i}_enabled`);
+        const inversorDiv = document.getElementById(`inversor${i}`);
+
+        inversorEnabled.addEventListener('change', function () {
+            inversorDiv.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    function toggleBatteryFields() {
+        const batteryFields = document.querySelectorAll('#battery-section input, #battery-section select');
+        const batteryCheckbox = document.getElementById('batteryCheckbox').checked;
+
+        batteryFields.forEach(field => {
+            field.disabled = !batteryCheckbox;
+        });
+    }
+
+    toggleBatteryFields();
+});
+</script>
+{% endblock %}

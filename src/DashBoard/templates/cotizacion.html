@@ -1,0 +1,40 @@
+<!-- templates/cotizacion.html -->
+{% extends 'base.html' %}
+
+{% block title %} Cotización {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_Ventas.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 bg-secondary rounded">
+    <h1 class="display-4">Cotización</h1>
+    <form action="{{ url_for('home_BP.submit_cotizacion') }}" method="POST" enctype="multipart/form-data">
+        <!-- Selección del Proyecto -->
+        <div class="mb-3">
+            <label for="project" class="form-label">Selecciona Proyecto</label>
+            <select class="form-select" id="project" name="project_id" required>
+                <option selected disabled>Elige un proyecto</option>
+                {% for proyecto in proyectos %}
+                    <option value="{{ proyecto.ProjectID }}">{{ proyecto.ProjectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Nombre de la Propuesta -->
+        <div class="mb-3">
+            <label for="propuesta" class="form-label">Nombre de la Propuesta</label>
+            <input type="text" class="form-control" id="propuesta" name="propuesta" required>
+        </div>
+
+        <!-- Subir Archivo de Propuesta -->
+        <div class="mb-3">
+            <label for="file" class="form-label">Subir Archivo (PDF)</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".pdf" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Cotización</button>
+    </form>
+</div>
+{% endblock %}

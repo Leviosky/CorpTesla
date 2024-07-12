@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %} Crear Proyecto Solar {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_Ventas.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="container mt-4 bg-secondary rounded">
+    <h1 class="display-4">Crear Proyecto Solar</h1>
+    <form action="{{ url_for('home_BP.AddProject', client_id=client.ClientesID, project_type='sistema_fotovoltaico') }}" method="POST">
+        <!-- Nombre del cliente -->
+        <div class="mb-3">
+            <label for="clientName" class="form-label">Nombre del Cliente</label>
+            <input type="text" class="form-control" id="clientName" name="clientName" value="{{ client.ClienteNombre }}" readonly>
+        </div>
+
+        <!-- Cédula del cliente -->
+        <div class="mb-3">
+            <label for="clientCedula" class="form-label">Cédula</label>
+            <input type="text" class="form-control" id="clientCedula" name="clientCedula" value="{{ client.ClienteCedula }}" readonly>
+        </div>
+
+        <!-- Servicio del cliente -->
+        <div class="mb-3">
+            <label for="clientService" class="form-label">Servicio</label>
+            <input type="text" class="form-control" id="clientService" name="clientService" value="{{ services.services }}" readonly>
+        </div>
+
+        <!-- Nombre del Proyecto -->
+        <div class="mb-3">
+            <label for="ProjectName" class="form-label">Nombre del Proyecto</label>
+            <input type="text" class="form-control" id="ProjectName" name="ProjectName" required>
+        </div>
+
+        <!-- Sistema solar -->
+        <div class="form-floating mb-3">
+            <select class="form-select" id="sistemaSolar" name="sistemaSolar" required aria-label="Sistema Solar">
+                <option selected disabled>Sistema Solar</option>
+                <option value="1">OFF-GRID</option>
+                <option value="2">ON-GRID</option>
+                <option value="3">Hybrid</option>
+            </select>
+            <label for="sistemaSolar">Selecciona</label>
+        </div>
+
+        <!-- Clase de proyecto -->
+        <div class="form-floating mb-3">
+            <select class="form-select" id="claseProyecto" name="claseProyecto" required aria-label="Clase de Proyecto">
+                <option selected disabled>Clase de Proyecto</option>
+                <option value="1">Residencial</option>
+                <option value="2">Comercial</option>
+                <option value="3">Industrial</option>
+            </select>
+            <label for="claseProyecto">Selecciona</label>
+        </div>
+
+        <!-- Consumo -->
+        <div class="mb-3">
+            <label for="consumo" class="form-label">Consumo</label>
+            <input type="text" class="form-control" id="consumo" name="consumo" required>
+        </div>
+
+        <!-- Fecha inicial -->
+        <div class="mb-3">
+            <label for="initDate" class="form-label">Fecha Inicial</label>
+            <input type="date" class="form-control" id="initDate" name="initDate" required>
+        </div>
+
+        <!-- Mapa de Leaflet para seleccionar la ubicación -->
+        <div class="mb-3">
+            <label for="location" class="form-label">Ingresar Ubicación</label>
+            <div id="map" style="height: 400px;"></div>
+            <input type="hidden" id="location" name="location">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+    </form>
+</div>
+
+<!-- Agregar CSS y JS de Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-VzLXTJGPSyTLX6d96AxgkKvE/LRb7ECGyTxuwtpjHnVWVZs2gp5RDjeM/tgBnVdM" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha384-RFZC58YeKApoNsIbBxf4z6JJXmh+geBSgkCQXFyh+4tiFSJmJBt+2FbjxW7Ar16M" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var map = L.map('map').setView([7.974275921465744, -80.43153047561646], 13); // Coordenadas iniciales
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker;
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker([lat, lon]).addTo(map)
+                .bindPopup('Ubicación seleccionada: ' + lat + ', ' + lon)
+                .openPopup();
+
+            document.getElementById('location').value = lat + ', ' + lon;
+        });
+    });
+</script>
+{% endblock %}

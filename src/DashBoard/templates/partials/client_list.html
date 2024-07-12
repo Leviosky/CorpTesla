@@ -1,0 +1,7 @@
+<ul class="list-group">
+    {% for client in clients %}
+    <li class="list-group-item">
+        <a href="{{ url_for('home_BP.client_profile', client_id=client.ClientesID) }}">{{ client.ClienteNombre }} - {{ client.ClienteCedula }} - {{ client.ClienteEmail }}</a>
+    </li>
+    {% endfor %}
+</ul>

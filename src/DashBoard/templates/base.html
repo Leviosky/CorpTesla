@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-    
+
 <head>
     <meta charset="utf-8">
     <title>{% block title %}CorpTesla{% endblock %}</title>
@@ -15,9 +15,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
-    
+
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
@@ -29,6 +30,11 @@
 
     <!-- Template Stylesheet -->
     <link href="{{ url_for('home_BP.static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <!-- Leaflet Stylesheet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-Daw3dMTOp0c9PjrGPNDrIu5Dk7LGfC33kw/Ri+QuYim8JL4AD/0UpFqLbETaJLcX"
+      crossorigin="anonymous">
+      
     {% block head %}
     {% endblock %}
 </head>
@@ -39,13 +45,12 @@
         <div class="sidebar pe-4 pb-3">
             {% block sidebar %}
             {% endblock %}
-            
         </div>
         <!-- Sidebar End -->
+
         <div class="content">
-            
             <!-- Navbar Start -->
-        {% block navbar %}
+            {% block navbar %}
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
                 <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
@@ -60,14 +65,14 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Message</span>
+                            <span class="d-none d-lg-inline-flex">Mensajes</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">
                                 <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <img class="rounded-circle" src="" alt="" style="width: 40px; height: 40px;">
                                     <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <h6 class="fw-normal mb-0">Proximamente</h6>
                                         <small>15 minutes ago</small>
                                     </div>
                                 </div>
@@ -77,7 +82,7 @@
                                 <div class="d-flex align-items-center">
                                     <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
                                     <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <h6 class="fw-normal mb-0">Estamos trabajando</h6>
                                         <small>15 minutes ago</small>
                                     </div>
                                 </div>
@@ -87,7 +92,7 @@
                                 <div class="d-flex align-items-center">
                                     <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
                                     <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <h6 class="fw-normal mb-0">En esto</h6>
                                         <small>15 minutes ago</small>
                                     </div>
                                 </div>
@@ -99,21 +104,21 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-bell me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Notificatin</span>
+                            <span class="d-none d-lg-inline-flex">Notificaciones</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
+                                <h6 class="fw-normal mb-0">Proximamente!</h6>
                                 <small>15 minutes ago</small>
                             </a>
                             <hr class="dropdown-divider">
                             <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
+                                <h6 class="fw-normal mb-0">Estamos trabajando</h6>
                                 <small>15 minutes ago</small>
                             </a>
                             <hr class="dropdown-divider">
                             <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
+                                <h6 class="fw-normal mb-0">en esto</h6>
                                 <small>15 minutes ago</small>
                             </a>
                             <hr class="dropdown-divider">
@@ -122,29 +127,30 @@
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            {% if nombre_usuario %}
-                            <span class="d-none d-lg-inline-flex">{{ nombre_usuario }}</span>
+                            {% if session['profile_picture'] %}
+                            <img class="rounded-circle me-lg-2" src="{{ url_for('login_BP.static', filename='img/' + session['profile_picture']) }}" alt="" style="width: 40px; height: 40px;">
+                            {% endif %}
+                            {% if session['name'] %}
+                            <span class="d-none d-lg-inline-flex">{{ session['name'] }}</span>
                             {% endif %}
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
+                            <a href="{{ url_for('login_BP.profile') }}" class="dropdown-item">Mi Perfil</a>
+                            
+                            <a href="{{url_for('login_BP.logout')}}" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
                 </div>
             </nav>
-        {% endblock %}
+            {% endblock %}
             <!-- Navbar End -->
-            
-            <div class="container-fluid pt-4 px-4"  style="height: auto;">
-                
+
+            <div class="container-fluid pt-4 px-4" style="height: auto;">
                 {% block content %}
                 {% endblock %}
-                
             </div>
         </div>
+
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
@@ -160,10 +166,13 @@
     <script src="{{ url_for('home_BP.static', filename='lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
     <script src="{{ url_for('home_BP.static', filename='lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha384-p8I+XSO+tgU+pJLdBl4RDUq5p0OV27ZQfszO35peQlVHCEbUGTlXt2JZFFbL6CC0" crossorigin="anonymous"></script>
+
     <!-- Template Javascript -->
     <script src="{{ url_for('home_BP.static', filename='js/main.js') }}"></script>
-    {% block scripts %}
-    {% endblock %}
+    
+
 </body>
 
 </html>

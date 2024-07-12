@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %} Crear Usuario {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_admin.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row vh-200 bg-secondary rounded align-items-center justify-content-center mx-0">
+        <div class="bg-secondary text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Empleados</h6>
+                <a href="{{ url_for('login_BP.register') }}">Agregar Empleado</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                    <thead>
+                        <tr class="text-white">
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">Cedula</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for Empleado in Empleados %}
+                            <tr>
+                                <td>{{Empleado.nombre}}</td>
+                                <td>{{Empleado.rol.rol}}</td>
+                                <td>{{Empleado.cedula}}</td>
+                                <td>{{Empleado.correo}}</td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" href="{{ url_for('login_BP.update_user', user_id=Empleado.id) }}">Actualizar</a>
+                                    <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ Empleado.id }})">Eliminar</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for delete confirmation -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="deleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Seguro que quieres eliminar este empleado?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(userId) {
+        const form = document.getElementById('deleteForm');
+        form.action = `/delete_user/${userId}`;
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        deleteModal.show();
+    }
+</script>
+{% endblock %}

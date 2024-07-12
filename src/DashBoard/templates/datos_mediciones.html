@@ -1,0 +1,106 @@
+<!-- templates/datos_mediciones.html -->
+{% extends 'base.html' %}
+
+{% block title %} Datos y Mediciones {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_ingeniero.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="container mt-4 bg-secondary rounded">
+    <h1 class="display-4">Datos y Mediciones</h1>
+    <form action="{{ url_for('home_BP.datos_mediciones') }}" method="POST">
+        <!-- Selección del Proyecto -->
+        <div class="mb-3">
+            <label for="project" class="form-label">Selecciona Proyecto</label>
+            <select class="form-select" id="project" name="project_id" required>
+                <option selected disabled>Elige un proyecto</option>
+                {% for proyecto in proyectos %}
+                    <option value="{{ proyecto.ProjectID }}">{{ proyecto.ProjectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Techo ID -->
+        <div class="mb-3">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="techo_id" name="techo_id" required>
+                <option selected>Tipo de Techo</option>
+                <option value="1">Zinc</option>
+                <option value="2">Panel Sandwich</option>
+                <option value="3">Tejalit</option>
+                <option value="4">Panalit</option>
+                <option value="5">Teja (Buena)</option>
+                <option value="6">Teja (Mala)</option>=
+            </select>
+        </div>
+
+        <!-- Aguas -->
+        <div class="mb-3">
+            <label for="aguas" class="form-label">Aguas</label>
+            <input type="number" class="form-control" id="aguas" name="aguas">
+        </div>
+
+
+        <!-- Información del Techo -->
+        <div class="mb-3">
+            <label for="floatingTextarea">Informacion sobre el techo</label>
+            <textarea class="form-control" placeholder="Posición al sol, inclinación, etc..." id="techo_info" name="techo_info" style="height: 150px;"></textarea>
+        </div>
+
+
+        <!-- Área en m² -->
+        <div class="mb-3">
+            <label for="area_m2" class="form-label">Área (m²)</label>
+            <input type="number" class="form-control" id="area_m2" name="area_m2">
+        </div>
+
+        <!-- IpAmp -->
+        <div class="mb-3">
+            <label for="ip_amp" class="form-label">IpAmp</label>
+            <input type="number" class="form-control" id="ip_amp" name="ip_amp">
+        </div>
+
+        <!-- Medunits -->
+        <div class="mb-3">
+            <label for="medunits" class="form-label">¿Cuantos Medidores?</label>
+            <input type="number" class="form-control" id="medunits" name="medunits">
+        </div>
+
+        <!-- Medbrand -->
+        <div class="mb-3">
+            <label for="medbrand" class="form-label">Marca del Medidor</label>
+            <input type="text" class="form-control" id="medbrand" name="medbrand">
+        </div>
+
+        <!-- Medtipe -->
+        <div class="mb-3">
+            <select class="form-select form-select-lg mb-3" name="medtipe" id="medtipe">
+                <option selected>Tipo de Medidor</option>
+                <option value="Medición Directa">Medición Directa</option>
+                <option value="Medición Indirecta">Medición Indirecta</option>
+                <option value="Ambos">Ambos</option>
+            </select>
+        </div>
+
+        <!-- Comentarios -->
+        <div class="mb-3">
+            <label for="comentarios" class="form-label">Comentarios</label>
+            <textarea class="form-control" id="comentarios" name="comentarios" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Datos</button>
+    </form>
+</div>
+{% endblock %}

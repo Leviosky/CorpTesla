@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %} ¿Tipo de Proyecto? {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_Ventas.html' %}
+{% endblock %}
+
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4">¿Tipo de Proyecto?</h1>
+            <div class="list-group mt-4">
+                <a href="{{ url_for('home_BP.AddProject', client_id=client_id, project_type='sistema_fotovoltaico') }}" class="list-group-item list-group-item-action">Sistema Fotovoltaico</a>
+                <a href="#" class="list-group-item list-group-item-action">Automatización</a>
+                <a href="#" class="list-group-item list-group-item-action">Electricidad</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

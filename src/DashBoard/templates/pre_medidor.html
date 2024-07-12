@@ -1,0 +1,66 @@
+<!-- templates/datos_mediciones.html -->
+{% extends 'base.html' %}
+
+{% block title %} Revisión {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_ingeniero.html' %}
+{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container mt-4 bg-secondary rounded">
+    <h1 class="display-4">Pre-medidor</h1>
+    <form action="{{ url_for('home_BP.submit_pre_medidor') }}" method="POST">
+        <!-- Selección del Proyecto -->
+        <div class="mb-3">
+            <label for="project" class="form-label">Selecciona Proyecto</label>
+            <select class="form-select" id="project" name="project_id" required>
+                <option selected disabled>Elige un proyecto</option>
+                {% for proyecto in proyectos %}
+                    <option value="{{ proyecto.ProjectID }}">{{ proyecto.ProjectName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <h6 class="mb-4">Nombre de la Planta</h6>
+            <input class="form-control form-control-lg mb-3" type="text" placeholder="Como se llamará la Planta Solar?" aria-label=".form-control-lg example" name="solarname">
+        </div>
+        <!-- Configuración del Inversor -->
+        
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch"
+                id="inversor_config" name="inversor_config" value="1">
+            <label class="form-check-label" for="inversor_config">Inversor Configurado?
+                </label>
+        </div>
+        <!-- Log del Inversor -->
+
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch"
+                id="inversor_log" name="inversor_log" value="1">
+            <label class="form-check-label" for="inversor_log">Logger Configurado?
+                </label>
+        </div>
+        <!-- Letrero -->
+
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch"
+                id="letrero" name="letrero" value="1">
+            <label class="form-check-label" for="letrero">Letrero de Advertencia Instalado?
+                </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>
+{% endblock %}

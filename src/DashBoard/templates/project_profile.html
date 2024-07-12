@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %} Perfil del Proyecto {% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar_Ventas.html' %}
+{% endblock %}
+
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<div class="container mt-4">
+    <h1 class="display-4">{{ proyecto.ProjectName }}</h1>
+
+    <div class="row">
+        <!-- Proyecto -->
+        <div class="col-md-6">
+            <div class="rounded bg-secondary p-2">
+                <h2>Proyecto</h2>
+                <p><strong>Nombre del Cliente:</strong> {{ proyecto.cliente.ClienteNombre }}</p>
+                <p><strong>Fecha de Inicio:</strong> {{ proyecto.InitDate }}</p>
+                <p><strong>Fecha de Finalización:</strong> {{ proyecto.FinishDate if proyecto.FinishDate else 'En proceso' }}</p>
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="col-md-6">
+            <div class="rounded bg-secondary p-2">
+                <h2>Información</h2>
+                {% if proyecto.TipoID == 1 and proyecto_solar %}
+                    <p><strong>Sistema Solar:</strong> {{ proyecto_solar.sistema_fotovoltaico.Sistema }}</p>
+                    <p><strong>Techo:</strong> {{ proyecto_solar.tipo_de_techo.Material }}</p>
+                    <p><strong>Aguas:</strong> {{ proyecto_solar.Aguas }}</p>
+                    <p><strong>Info adicional:</strong> {{ proyecto_solar.TechoInfo }}</p>
+                    <p><strong>Area:</strong> {{ proyecto_solar.Area }} m2</p>
+                    <p><strong>IP:</strong> {{ proyecto_solar.IpAmp }} A</p>
+                    <p><strong>Consumo Promedio:</strong> {{ proyecto_solar.Demanda }} kWh</p>
+                    <p><strong>Capacidad Instalada:</strong> {{ proyecto_solar.CapacidadInst }} kW</p>
+                    <p><strong>Paneles Marca:</strong> {{ proyecto_solar.paneles.Marca }} </p>
+                    <p><strong>Paneles de:</strong> {{ proyecto_solar.PanelWatts }} W</p>
+                    <p><strong>Cantidad de Paneles:</strong> {{ proyecto_solar.PanelUnits }} Unidades</p>
+                    {% if proyecto_solar.SistemaID == 2 %}
+                        <p><strong>Sistema On-Grid, No hay Baterías</strong></p>
+                    {% else %}
+                        <p><strong>Bateria:</strong> {{ proyecto_solar.bateria.Marca }} </p>
+                        <p><strong>Potenca:</strong> {{ proyecto_solar.BattWatts }} kWh</p>
+                        <p><strong>Unidades de baterias:</strong> {{ proyecto_solar.BattUnits }} </p>
+                    {% endif %}
+                    <p><strong>Comentarios:</strong> {{ proyecto_solar.Comentarios }}</p>
+                {% elif proyecto.TipoID == 2 %}
+                    <!-- Información para otros tipos de proyectos -->
+                    <p>Información adicional para TipoID 2.</p>
+                {% else %}
+                    <p>No hay información adicional disponible.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Propuesta -->
+        <div class="col-md-6 ">
+            <div class="rounded bg-secondary p-2">
+                <h2>Propuesta de Cotización</h2>
+                {% if propuesta %}
+                    <p><strong>Propuesta:</strong> {{ propuesta.Propuesta }}</p>
+                    <p><strong>Archivo de Propuesta:</strong> <a href="{{ url_for('home_BP.static', filename='cot/' + propuesta.PropuestaFile) }}">{{ propuesta.PropuestaFile }}</a></p>
+                {% else %}
+                    <p>No hay propuesta para este proyecto.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Ventas -->
+        <div class="col-md-6">
+            <div class="rounded bg-secondary p-2">
+                <h2>Información de Venta</h2>
+                {% if venta %}
+                    <p><strong>Pago 1:</strong> {{ 'Sí' if venta.Pago1 else 'No' }}</p>
+                    <p><strong>Pago 2:</strong> {{ 'Sí' if venta.Pago2 else 'No' }}</p>
+                    <p><strong>Pago 3:</strong> {{ 'Sí' if venta.Pago3 else 'No' }}</p>
+                {% else %}
+                    <p>No hay ventas para este proyecto.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Agregar CSS y JS de Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var lat = {{ proyecto.ProjectLat }};
+        var lon = {{ proyecto.ProjectLon }};
+        var map = L.map('map').setView([lat, lon], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup('{{ proyecto.ProjectName }}')
+            .openPopup();
+    });
+</script>
+{% endblock %}
